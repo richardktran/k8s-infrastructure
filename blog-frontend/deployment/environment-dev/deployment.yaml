@@ -20,7 +20,7 @@ spec:
       containers:
         # Get image from richardktran/blog-frontend:devevelopment:{version}
         - image: __image__
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: "Always"
           name: "blog-frontend"
           env:
             - name: "REACT_APP_ENVIRONMENT"
