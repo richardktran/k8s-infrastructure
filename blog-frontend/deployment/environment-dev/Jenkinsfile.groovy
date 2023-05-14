@@ -57,7 +57,7 @@ pipeline {
       }
     }
 
-    stage('Push image to registry') {
+    stage('Deploy') {
       steps {
         dir("${SERVICE_NAME}/deployment/environment-dev") {
           sh """
