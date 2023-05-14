@@ -56,6 +56,19 @@ pipeline {
         }
       }
     }
+
+    stage('Push image to registry') {
+      steps {
+        dir("${SERVICE_NAME}/deployment/environment-dev") {
+          sh """
+            APP_IMAGE="${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"              
+            sed -i "s/__image__/\$APP_IMAGE/g" deployment.yaml
+            kubectl apply -f deployment.yaml
+          """
+          echo 'Deploy to k8s completed'
+        }
+      }
+    }
   } // End stages
   post {
       always {
