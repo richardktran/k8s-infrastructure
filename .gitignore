@@ -1,0 +1,9 @@
+.vscode
+.terraform
+.DS_Store
+.idea
+*.retry
+*.log
+*.plan
+*.tfstate*
+secret/*
