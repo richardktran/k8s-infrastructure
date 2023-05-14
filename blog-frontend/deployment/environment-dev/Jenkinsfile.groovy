@@ -32,51 +32,50 @@ pipeline {
       }
     }
 
+    stage('Build image') {
+      steps {
+        dir('var/www/') {
+          sh """
+            docker build -t ${APP_IMAGE} .
+            docker tag ${APP_IMAGE} ${APP_IMAGE}
+          """
+          echo 'Build image completed'
+        }
+      }
+    }
+
+    stage('Push image to registry') {
+      steps {
+        dir('var/www/') {
+          withCredentials([string(credentialsId: 'docker-pwd', variable: 'DOCKER_PASSWORD')])  {
+            sh('echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin')
+          }
+          sh """
+            docker push ${APP_IMAGE}
+          """
+          echo 'Push image to registry completed'
+        }
+      }
+    }
+
     stage('Deploy') {
       steps {
         dir("${SERVICE_NAME}/deployment/environment-dev") {
           sh """
             sed -i "s#__image__#$APP_IMAGE#g" deployment.yaml
-            cat deployment.yaml
+            kubectl apply -f deployment.yaml
+            kubectl apply -f service.yaml
           """
           echo 'Deploy to k8s completed'
         }
       }
     }
-
-    // stage('Build image') {
-    //   steps {
-    //     dir('var/www/') {
-    //       sh """
-    //         docker build -t ${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER} .
-    //         docker tag ${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER} ${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}
-    //       """
-    //       echo 'Build image completed'
-    //     }
-    //   }
-    // }
-
-    // stage('Push image to registry') {
-    //   steps {
-    //     dir('var/www/') {
-    //       withCredentials([string(credentialsId: 'docker-pwd', variable: 'DOCKER_PASSWORD')])  {
-    //         sh('echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin')
-    //       }
-    //       sh """
-    //         docker push ${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}
-    //       """
-    //       echo 'Push image to registry completed'
-    //     }
-    //   }
-    // }
-
-    
   } // End stages
   post {
       always {
         // Clean up docker images
         sh """
-          docker rmi ${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}
+          docker rmi ${APP_IMAGE}
         """
         echo 'Clean up docker images completed'
       }
