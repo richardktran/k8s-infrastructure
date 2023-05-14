@@ -28,10 +28,6 @@ spec:
           ports:
             - containerPort: 9006
               protocol: TCP
-          resources:
-            requests:
-              cpu: 1000m
-              memory: 2G
           terminationMessagePath: /dev/termination-log # this is when the container is terminated, it will write the log to this path
           terminationMessagePolicy: File
       restartPolicy: Always
