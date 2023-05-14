@@ -35,9 +35,11 @@ pipeline {
     stage('Deploy') {
       steps {
         dir("${SERVICE_NAME}/deployment/environment-dev") {
-          sh "sed -i 's/__image__/$APP_IMAGE/g' deployment.yaml"
-          sh "cat deployment.yaml"
-          sh "kubectl apply -f deployment.yaml"
+          sh """
+            sed -i "s#__image__#$APP_IMAGE#g" deployment.yaml
+            cat deployment.yaml
+            kubectl apply -f deployment.yaml
+          """
           echo 'Deploy to k8s completed'
         }
       }
