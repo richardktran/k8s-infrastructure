@@ -62,7 +62,8 @@ pipeline {
         dir("${SERVICE_NAME}/deployment/environment-dev") {
           sh """
             APP_IMAGE="${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"              
-            sed -i "s/__image__/\$APP_IMAGE/g" deployment.yaml
+            sed -i 's/__image__/$APP_IMAGE/g' deployment.yaml
+            cat deployment.yaml
             kubectl apply -f deployment.yaml
           """
           echo 'Deploy to k8s completed'
