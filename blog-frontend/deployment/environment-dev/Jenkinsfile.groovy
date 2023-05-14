@@ -36,7 +36,7 @@ pipeline {
       steps {
         dir('var/www/') {
           sh """
-            docker build -t ${APP_IMAGE} .
+            docker build -t ${APP_IMAGE} . --network=host
             docker tag ${APP_IMAGE} ${APP_IMAGE}
           """
           echo 'Build image completed'
