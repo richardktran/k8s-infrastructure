@@ -6,6 +6,7 @@ pipeline {
     ENVIRONMENT='development'
     DOCKER_USERNAME='richardktran'
     SERVICE_NAME='blog-frontend'
+    APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"
   }
 
   parameters {
@@ -34,7 +35,6 @@ pipeline {
     stage('Deploy') {
       steps {
         dir("${SERVICE_NAME}/deployment/environment-dev") {
-          def APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"
           sh "sed -i 's/__image__/$APP_IMAGE/g' deployment.yaml"
           sh "cat deployment.yaml"
           sh "kubectl apply -f deployment.yaml"
