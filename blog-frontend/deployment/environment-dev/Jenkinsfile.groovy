@@ -38,7 +38,6 @@ pipeline {
           sh """
             sed -i "s#__image__#$APP_IMAGE#g" deployment.yaml
             cat deployment.yaml
-            kubectl apply -f deployment.yaml
           """
           echo 'Deploy to k8s completed'
         }
