@@ -12,7 +12,6 @@ pipeline {
   parameters {
     string (name: "gitBranch", defaultValue: "develop", description: "Branch to build")
     string (name: "git_sha", defaultValue: "HEAD", description: "sha to build")
-    string (name: "BUILD_NUMBER", defaultValue: "0.1.0", description: "The build number")
   }
 
   stages {
