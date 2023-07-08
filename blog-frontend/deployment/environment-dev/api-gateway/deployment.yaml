@@ -2,26 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: "blog-frontend"
-  name: "blog-frontend"
+    app: "api-gateway"
+  name: "api-gateway"
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "blog-frontend"
+      app: "api-gateway"
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: "blog-frontend"
+        app: "api-gateway"
     spec:
       containers:
-        # Get image from richardktran/blog-frontend:devevelopment:{version}
+        # Get image from richardktran/api-gateway:devevelopment:{version}
         - image: __image__
           imagePullPolicy: "Always"
-          name: "blog-frontend"
+          name: "api-gateway"
           env:
             - name: "REACT_APP_ENVIRONMENT"
               value: "PROD"

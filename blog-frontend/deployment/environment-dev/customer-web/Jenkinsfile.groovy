@@ -5,7 +5,7 @@ pipeline {
     DOMAIN_NAME='richardktran.dev'
     ENVIRONMENT='development'
     DOCKER_USERNAME='richardktran'
-    SERVICE_NAME='blog-frontend'
+    SERVICE_NAME='customer-web'
     APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"
   }
 
@@ -23,7 +23,7 @@ pipeline {
             branches: [[name: "${gitBranch}" ]],
             userRemoteConfigs: [[
               credentialsId: "github-token",
-              url: "git@github.com:richardktran/MyBlogFE.git"]
+              url: "git@github.com:RichardKTranBlog/customer-web.git"]
             ]]
           )
           echo 'Git Checkout Completed'
