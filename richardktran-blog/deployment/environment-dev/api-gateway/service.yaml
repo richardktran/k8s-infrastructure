@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: "blog-frontend"
-  name: "blog-frontend"
+    app: "api-gateway"
+  name: "api-gateway"
 spec:
   ports:
     - port: 80
       protocol: TCP
-      targetPort: 9006
+      targetPort: 80
   selector:
-    app: "blog-frontend"
+    app: "api-gateway"
   sessionAffinity: None
   type: NodePort

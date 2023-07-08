@@ -154,3 +154,18 @@ Lớp: Chuyên môn
 **NOTE**: By default, when build image. Jenkins will use jenkins network with bridge driver, we have to change to host network in Jenkinsfile on the build image stage to be able to access internet.
 
 ![Untitled](.readme/Untitled%206.png)
+
+## Note
+In case kubelet is not running, run the following command:
+```bash
+Please perform below steps on the master node. It works like charm.
+
+1. sudo -i
+
+2. swapoff -a
+
+3. exit
+
+4. strace -eopenat kubectl version
+
+```

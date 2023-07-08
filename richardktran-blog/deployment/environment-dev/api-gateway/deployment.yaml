@@ -2,31 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: "blog-frontend"
-  name: "blog-frontend"
+    app: "api-gateway"
+  name: "api-gateway"
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "blog-frontend"
+      app: "api-gateway"
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: "blog-frontend"
+        app: "api-gateway"
     spec:
       containers:
-        # Get image from richardktran/blog-frontend:devevelopment:{version}
+        # Get image from richardktran/api-gateway:devevelopment:{version}
         - image: __image__
           imagePullPolicy: "Always"
-          name: "blog-frontend"
+          name: "api-gateway"
           env:
             - name: "REACT_APP_ENVIRONMENT"
               value: "PROD"
           ports:
-            - containerPort: 9006
+            - containerPort: 80
               protocol: TCP
           terminationMessagePath: /dev/termination-log # this is when the container is terminated, it will write the log to this path
           terminationMessagePolicy: File

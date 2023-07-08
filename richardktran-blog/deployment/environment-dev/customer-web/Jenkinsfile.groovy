@@ -5,7 +5,8 @@ pipeline {
     DOMAIN_NAME='richardktran.dev'
     ENVIRONMENT='development'
     DOCKER_USERNAME='richardktran'
-    SERVICE_NAME='blog-frontend'
+    PROJECT_NAME='richardktran-blog'
+    SERVICE_NAME='customer-web'
     APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"
   }
 
@@ -23,7 +24,7 @@ pipeline {
             branches: [[name: "${gitBranch}" ]],
             userRemoteConfigs: [[
               credentialsId: "github-token",
-              url: "git@github.com:richardktran/MyBlogFE.git"]
+              url: "git@github.com:RichardKTranBlog/customer-web.git"]
             ]]
           )
           echo 'Git Checkout Completed'
@@ -59,7 +60,7 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        dir("${SERVICE_NAME}/deployment/environment-dev") {
+        dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
           sh """
             sed -i "s#__image__#$APP_IMAGE#g" deployment.yaml
             kubectl apply -f deployment.yaml
