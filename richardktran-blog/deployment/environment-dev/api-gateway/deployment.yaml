@@ -26,7 +26,7 @@ spec:
             - name: "REACT_APP_ENVIRONMENT"
               value: "PROD"
           ports:
-            - containerPort: 8080
+            - containerPort: 80
               protocol: TCP
           terminationMessagePath: /dev/termination-log # this is when the container is terminated, it will write the log to this path
           terminationMessagePolicy: File
