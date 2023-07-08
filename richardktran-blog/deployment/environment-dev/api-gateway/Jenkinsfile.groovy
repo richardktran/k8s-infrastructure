@@ -5,6 +5,7 @@ pipeline {
     DOMAIN_NAME='richardktran.dev'
     ENVIRONMENT='development'
     DOCKER_USERNAME='richardktran'
+    PROJECT_NAME='richardktran-blog'
     SERVICE_NAME='api-gateway'
     APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"
   }
@@ -59,7 +60,7 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        dir("${SERVICE_NAME}/deployment/environment-dev") {
+        dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
           sh """
             sed -i "s#__image__#$APP_IMAGE#g" deployment.yaml
             kubectl apply -f deployment.yaml
