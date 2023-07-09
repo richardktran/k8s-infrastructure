@@ -7,9 +7,7 @@ metadata:
 spec:
   ports:
     - port: 80
-      protocol: TCP
       targetPort: 80
   selector:
     app: "comment-service"
-  sessionAffinity: None
-  type: NodePort
+  type: ClusterIP
