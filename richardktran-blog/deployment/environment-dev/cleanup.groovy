@@ -1,9 +1,9 @@
 pipeline {
   agent any
 
-  triggers {
-    cron('TZ=Asia/Saigon \n 0 * * * *') // 4AM in VietNam time
-  }
+  // triggers {
+  //   cron('TZ=Asia/Saigon \n 0 * * * *') // 4AM in VietNam time
+  // }
 
   environment {
     KUBECONFIG="$HOME/.kube/config"
