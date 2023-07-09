@@ -4,7 +4,6 @@ metadata:
   name: api-gateway-ingress
   namespace: development
   annotations:
-    ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - host: gateway.richardktran.local
