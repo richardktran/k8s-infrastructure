@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   annotations:
   name: api-gateway-ingress
-  namespace: ingress-controller
+  namespace: development
 spec:
   #ingressClassName: nginx
   rules:
@@ -15,6 +15,5 @@ spec:
             name: "api-gateway"
             port:
               number: 80
-            namespace: development
         path: /
         pathType: Prefix
