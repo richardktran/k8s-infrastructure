@@ -15,5 +15,6 @@ spec:
             name: "api-gateway"
             port:
               number: 80
+            namespace: development
         path: /
         pathType: Prefix
