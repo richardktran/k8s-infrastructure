@@ -1,14 +1,19 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app
-  namespace: ingress-controller
+  name: customer-web-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  # ingressClassName: nginx
   rules:
-  - host: richardktran.local
+  - host: "richardktran.local"
     http:
       paths:
-      - path: /
+      - path: "/"
+        pathType: Prefix
         backend:
-          serviceName: customer-web
-          servicePort: 80
+          service:
+            name: "customer-web"
+            port:
+              number: 80

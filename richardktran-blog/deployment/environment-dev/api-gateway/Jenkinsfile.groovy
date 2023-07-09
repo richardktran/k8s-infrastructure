@@ -3,7 +3,7 @@ pipeline {
   environment {
     KUBECONFIG="$HOME/.kube/config"
     DOMAIN_NAME='richardktran.dev'
-    ENVIRONMENT='development'
+    ENVIRONMENT='ingress-nginx'
     DOCKER_USERNAME='richardktran'
     PROJECT_NAME='richardktran-blog'
     SERVICE_NAME='api-gateway'
