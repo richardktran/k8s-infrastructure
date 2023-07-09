@@ -11,7 +11,7 @@ spec:
       paths:
       - backend:
           service:
-            name: api-gateway
+            name: "api-gateway"
             port:
               number: 80
         path: /
