@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: app
+  namespace: ingress-controller
+spec:
+  rules:
+  - host: gateway.richardktran.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: api-gateway
+          servicePort: 80
