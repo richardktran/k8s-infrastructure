@@ -1,19 +1,19 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
   name: api-gateway-ingress
   namespace: development
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
 spec:
-  #ingressClassName: nginx
   rules:
   - host: gateway.richardktran.local
     http:
       paths:
-      - backend:
+      - path: /
+        pathType: Prefix
+        backend:
           service:
-            name: "api-gateway"
+            name: api-gateway
             port:
               number: 80
-        path: /
-        pathType: Prefix

@@ -65,7 +65,6 @@ pipeline {
             sed -i "s#__image__#$APP_IMAGE#g" deployment.yaml
             kubectl apply -f deployment.yaml -n $ENVIRONMENT
             kubectl apply -f service.yaml -n $ENVIRONMENT
-            kubectl apply -f ingress.yaml
           """
           echo 'Deploy to k8s completed'
         }
