@@ -32,6 +32,14 @@ pipeline {
       }
     }
 
+    stage('Setup params') {
+      steps {
+        dir('var/www/') {
+          sh "cp .env.example .env"
+        }
+      }
+    }
+
     stage('Build image') {
       steps {
         dir('var/www/') {
