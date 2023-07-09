@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   annotations:
   name: api-gateway-ingress
+  namespace: ingress-controller
 spec:
   #ingressClassName: nginx
   rules:
