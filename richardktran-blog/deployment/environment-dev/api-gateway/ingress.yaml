@@ -1,14 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
   name: api-gateway-ingress
-  namespace: ingress-controller
 spec:
+  #ingressClassName: nginx
   rules:
   - host: gateway.richardktran.local
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: api-gateway
-          servicePort: 80
+      - backend:
+          service:
+            name: api-gateway
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
