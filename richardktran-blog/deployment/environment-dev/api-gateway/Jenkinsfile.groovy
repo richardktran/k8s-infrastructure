@@ -7,7 +7,7 @@ pipeline {
     DOCKER_USERNAME='richardktran'
     PROJECT_NAME='richardktran-blog'
     SERVICE_NAME='api-gateway'
-    APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"
+    APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}"
   }
 
   parameters {
@@ -70,7 +70,9 @@ pipeline {
       steps {
         dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
           sh """
+            DOCKER_TAG="${ENVIRONMENT}-${BUILD_NUMBER}"
             sed -i "s#__image__#$APP_IMAGE#g" values.yaml
+            sed -i "s#__docker-tag__#$DOCKER_TAG#g" values.yaml
             helm upgrade ${ENVIRONMENT}-${SERVICE_NAME} --install \${WORKSPACE}/${PROJECT_NAME}/charts/backend -n ${ENVIRONMENT} -f values.yaml
           """
           echo 'Deploy to k8s completed'

@@ -4,7 +4,7 @@ image:
   repository: __image__
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: __docker-tag__
 
 imagePullSecrets: []
 nameOverride: "api-gateway"
