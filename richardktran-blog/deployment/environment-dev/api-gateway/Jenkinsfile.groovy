@@ -7,7 +7,9 @@ pipeline {
     DOCKER_USERNAME='richardktran'
     PROJECT_NAME='richardktran-blog'
     SERVICE_NAME='api-gateway'
-    APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"
+    APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}"
+    DOCKER_TAG = "${ENVIRONMENT}-${BUILD_NUMBER}"
+    FULL_IMAGE = "${APP_IMAGE}:${DOCKER_TAG}"
   }
 
   parameters {
@@ -44,8 +46,8 @@ pipeline {
       steps {
         dir('var/www/') {
           sh """
-            docker build -t ${APP_IMAGE} . --network=host
-            docker tag ${APP_IMAGE} ${APP_IMAGE}
+            docker build -t ${FULL_IMAGE} . --network=host
+            docker tag ${FULL_IMAGE} ${FULL_IMAGE}
           """
           echo 'Build image completed'
         }
@@ -59,7 +61,7 @@ pipeline {
             sh('echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin')
           }
           sh """
-            docker push ${APP_IMAGE}
+            docker push ${FULL_IMAGE}
           """
           echo 'Push image to registry completed'
         }
@@ -70,9 +72,9 @@ pipeline {
       steps {
         dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
           sh """
-            sed -i "s#__image__#$APP_IMAGE#g" deployment.yaml
-            kubectl apply -f deployment.yaml -n $ENVIRONMENT
-            kubectl apply -f service.yaml -n $ENVIRONMENT
+            sed -i "s#__image__#$APP_IMAGE#g" values.yaml
+            sed -i "s#__docker-tag__#$DOCKER_TAG#g" values.yaml
+            helm upgrade ${ENVIRONMENT}-${SERVICE_NAME} --install \${WORKSPACE}/${PROJECT_NAME}/charts/backend -n ${ENVIRONMENT} -f values.yaml
           """
           echo 'Deploy to k8s completed'
         }
@@ -83,7 +85,7 @@ pipeline {
       always {
         // Clean up docker images
         sh """
-          docker rmi ${APP_IMAGE}
+          docker rmi ${FULL_IMAGE}
         """
         echo 'Clean up docker images completed'
       }
