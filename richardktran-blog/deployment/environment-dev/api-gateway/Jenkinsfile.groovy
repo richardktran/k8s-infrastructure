@@ -70,7 +70,7 @@ pipeline {
       steps {
         dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
           sh """
-            sed -i "s#__image__#$APP_IMAGE#g" value.yaml
+            sed -i "s#__image__#$APP_IMAGE#g" values.yaml
             helm upgrade ${ENVIRONMENT}-${SERVICE_NAME} --install \${WORKSPACE}/${PROJECT_NAME}/charts/backend -n ${ENVIRONMENT} -f values.yaml
           """
           echo 'Deploy to k8s completed'
