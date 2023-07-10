@@ -7,7 +7,9 @@ pipeline {
     DOCKER_USERNAME='richardktran'
     PROJECT_NAME='richardktran-blog'
     SERVICE_NAME='comment-service'
-    APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}:${ENVIRONMENT}-${BUILD_NUMBER}"
+    APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}"
+    DOCKER_TAG = "${ENVIRONMENT}-${BUILD_NUMBER}"
+    FULL_IMAGE = "${APP_IMAGE}:${DOCKER_TAG}"
   }
 
   parameters {
@@ -36,8 +38,8 @@ pipeline {
       steps {
         dir('var/www/') {
           sh """
-            docker build -t ${APP_IMAGE} . --network=host
-            docker tag ${APP_IMAGE} ${APP_IMAGE}
+            docker build -t ${FULL_IMAGE} . --network=host
+            docker tag ${FULL_IMAGE} ${FULL_IMAGE}
           """
           echo 'Build image completed'
         }
@@ -51,7 +53,7 @@ pipeline {
             sh('echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin')
           }
           sh """
-            docker push ${APP_IMAGE}
+            docker push ${FULL_IMAGE}
           """
           echo 'Push image to registry completed'
         }
@@ -75,7 +77,7 @@ pipeline {
       always {
         // Clean up docker images
         sh """
-          docker rmi ${APP_IMAGE}
+          docker rmi ${FULL_IMAGE}
         """
         echo 'Clean up docker images completed'
       }
