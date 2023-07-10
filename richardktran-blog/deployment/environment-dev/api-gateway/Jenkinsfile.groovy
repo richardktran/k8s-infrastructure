@@ -85,7 +85,7 @@ pipeline {
       always {
         // Clean up docker images
         sh """
-          docker rmi ${APP_IMAGE}
+          docker rmi ${FULL_IMAGE}
         """
         echo 'Clean up docker images completed'
       }
