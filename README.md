@@ -1,8 +1,5 @@
 # How to setup VM/VPS with Jenkins, K8s
 
-Loại: Devops, Jenkins, K8s
-Lớp: Chuyên môn
-
 ## Setup VPS/VM:
 
 1. Create 2 or more VPS/VM with following minimum requirement:
