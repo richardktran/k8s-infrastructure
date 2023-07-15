@@ -208,17 +208,24 @@
     ```bash
         frontend http_front
             bind *:80
+            acl is_jenkins_host hdr(host) -i jenkins.richardktran.local
+            use_backend jenkins_backend if is_jenkins_host
             default_backend http_back
 
         backend http_back
             balance roundrobin
             server master 172.16.171.135:31301 check
             server worker1 172.16.171.133:31301 check
+
+        backend jenkins_backend
+            mode http
+            server jenkins_server 172.16.171.135:8080 check
     ```
 
-4. Restart HAProxy:
+4. Validate config file & restart HAProxy:
     ```bash
-        sudo systemctl restart haproxy
+        haproxy -c -f /etc/haproxy/haproxy.cfg
+        sudo service haproxy restart
     ```
 
 5. In the external machine, add the following config to the end of /etc/hosts file:
