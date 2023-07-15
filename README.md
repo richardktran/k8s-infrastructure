@@ -221,16 +221,22 @@
             mode http
             server jenkins_server 172.16.171.135:8080 check
     ```
+    Go to Jenkins > Manage Jenkins > System, in the "Jenkins URL" field, enter the following url:
+    ```bash
+    http://jenkins.richardktran.local/
+    ```
 
 4. Validate config file & restart HAProxy:
     ```bash
-        haproxy -c -f /etc/haproxy/haproxy.cfg
-        sudo service haproxy restart
+    haproxy -c -f /etc/haproxy/haproxy.cfg
+    sudo service haproxy restart
     ```
 
 5. In the external machine, add the following config to the end of /etc/hosts file:
     ```bash
+    172.16.171.135 richardktran.local
     172.16.171.135 gateway.richardktran.local
+    172.16.171.135 jenkins.richardktran.local
     ```
 6. Config your ingress in the value.yaml, example:
     ```bash
