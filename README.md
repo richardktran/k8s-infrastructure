@@ -28,10 +28,10 @@ Lớp: Chuyên môn
 2. Clone setup files and setup K8s for **master node**:
     
     ```bash
-    git clone https://github.com/richardktran/infrastructure-setup.git
-    cp ~/infrastructure-setup/scripts/master.sh ./master.sh
-    cp ~/infrastructure-setup/scripts/common.sh ./common.sh
-    cp ~/infrastructure-setup/infrastructure/jenkins/setup.sh ./jenkins-setup.sh
+    git clone https://github.com/richardktran/k8s-infrastructure.git
+    cp ./k8s-infrastructure/nodes-setup/master.sh ./master.sh
+    cp ./k8s-infrastructure/nodes-setup/common.sh ./common.sh
+    cp ./k8s-infrastructure/nodes-setup/jenkins.sh ./jenkins-setup.sh
     sudo chmod +x common.sh
     sudo chmod +x master.sh
     sudo chmod +x jenkins-setup.sh
@@ -70,9 +70,9 @@ Lớp: Chuyên môn
 2. Clone setup files and setup K8s for **master node**:
     
     ```bash
-    git clone https://github.com/richardktran/infrastructure-setup.git
-    cp ~/infrastructure-setup/scripts/node.sh ./node.sh
-    cp ~/infrastructure-setup/scripts/common.sh ./common.sh
+    git clone https://github.com/richardktran/k8s-infrastructure.git
+    cp ./k8s-infrastructure/nodes-setup/node.sh ./node.sh
+    cp ./k8s-infrastructure/nodes-setup/common.sh ./common.sh
     sudo chmod +x common.sh
     sudo chmod +x node.sh
     ```
