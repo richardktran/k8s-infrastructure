@@ -155,6 +155,102 @@ Lớp: Chuyên môn
 
 ![Untitled](.readme/Untitled%206.png)
 
+## Setup HAProxy and Ingress-nginx
+
+### Setup ingress-nginx
+
+1. Check the current kubernetes version by run the following command:
+    
+    ```bash
+    kubectl version
+    ```
+
+2. Go to https://github.com/kubernetes/ingress-nginx/ and find the version of ingress-nginx that match with the kubernetes version.
+    ```bash
+        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+        helm search repo ingress-nginx --versions
+    ```
+
+3. Install ingress-nginx:
+    ```bash
+        CHART_VERSION="4.6.1"
+        APP_VERSION="1.7.1"
+
+        helm template ingress-nginx ingress-nginx \
+        --repo https://kubernetes.github.io/ingress-nginx \
+        --version ${CHART_VERSION} \
+        --namespace ingress-nginx 
+        > ./nginx-ingress.${APP_VERSION}.yaml
+    ```
+
+4. Deploy the Ingress controller
+    ```bash
+        kubectl create namespace ingress-nginx
+        kubectl apply -f ./nginx-ingress.${APP_VERSION}.yaml
+    ```
+
+### Config HAProxy
+1. Check the port of ingress-nginx:
+    ```bash
+        kubectl get svc -n ingress-nginx
+    ```
+    If it show like this:
+    ```bash
+        NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+        ingress-nginx-controller             LoadBalancer   10.97.10.71     <pending>     80:31301/TCP,443:30929/TCP   47m
+        ingress-nginx-controller-admission   ClusterIP      10.111.105.15   <none>        443/TCP                      47m
+    ```
+    It mean the port of ingress-nginx is 31301 for http and 30929 for https.
+
+2. Open HAProxy config:
+    ```bash
+        sudo vim /etc/haproxy/haproxy.cfg
+    ```
+
+3. Add the following config to the end of that file, replace the port of ingress-nginx with the port you get from step 1, replace the ip of master and worker node with your ip.
+    ```bash
+        frontend http_front
+            bind *:80
+            default_backend http_back
+
+        backend http_back
+            balance roundrobin
+            server master 172.16.171.135:31301 check
+            server worker1 172.16.171.133:31301 check
+    ```
+
+4. Restart HAProxy:
+    ```bash
+        sudo systemctl restart haproxy
+    ```
+
+5. In the external machine, add the following config to the end of /etc/hosts file:
+    ```bash
+    172.16.171.135 gateway.richardktran.local
+    ```
+6. Config your ingress in the value.yaml, example:
+    ```bash
+    ingress:
+        enabled: true
+        className: "nginx"
+        annotations:
+            kubernetes.io/ingress.class: nginx
+            nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+            nginx.ingress.kubernetes.io/limit-rps: "15"
+            nginx.ingress.kubernetes.io/limit-rpm: "450"
+            # kubernetes.io/ingress.class: nginx
+            # kubernetes.io/tls-acme: "true"
+        hosts:
+            - host: gateway.richardktran.local
+            paths:
+                - path: /
+                pathType: ImplementationSpecific
+        tls: []
+    ```
+
+7. Rebuild your helm chart and deploy it.
+8. Access to the gateway.richardktran.local to see the result.
+
 ## Note
 In case kubelet is not running, run the following command:
 ```bash
