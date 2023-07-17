@@ -6,6 +6,14 @@ def getTicketId(branch) {
         return null
     }
 }
+
+def getServiceId(serviceName, ticketId) {
+    if (ticketId != 'null') {
+        return "${ticketId}-${serviceName}"
+    } else {
+        return serviceName
+    }
+}
 pipeline {
   agent any 
   environment {
@@ -20,7 +28,7 @@ pipeline {
     TICKET_ID = getTicketId(gitBranch) // New variable to store rb-*
     SERVICE_NAME = 'api-gateway'
 
-    SERVICE_ID = TICKET_ID != 'null' ? "${TICKET_ID}-${SERVICE_NAME}" : SERVICE_NAME
+    SERVICE_ID = getServiceId(SERVICE_NAME, TICKET_ID)
   }
 
   parameters {
