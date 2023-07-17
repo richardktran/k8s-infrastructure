@@ -19,6 +19,10 @@ pipeline {
     DOCKER_TAG = "${ENVIRONMENT}-${BUILD_NUMBER}"
     FULL_IMAGE = "${APP_IMAGE}:${DOCKER_TAG}"
     TICKET_ID = getTicketId(gitBranch) // New variable to store rb-*
+
+    if (TICKET_ID != 'null') {
+        SERVICE_NAME = "${TICKET_ID}-${SERVICE_NAME}"
+    }
   }
 
   parameters {
@@ -35,6 +39,7 @@ pipeline {
               } else {
                   echo "RB Branch not found. Using default branch."
               }
+              echo "SERVICE_NAME: ${SERVICE_NAME}"
           }
       }
     }
