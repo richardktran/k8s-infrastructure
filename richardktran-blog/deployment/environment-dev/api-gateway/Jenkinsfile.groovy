@@ -18,6 +18,7 @@ pipeline {
     APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}"
     DOCKER_TAG = "${ENVIRONMENT}-${BUILD_NUMBER}"
     FULL_IMAGE = "${APP_IMAGE}:${DOCKER_TAG}"
+    RB_BRANCH = getRBBranch(gitBranch) // New variable to store rb-*
   }
 
   parameters {
