@@ -1,8 +1,24 @@
+def getTicketId(branch) {
+    def rbBranch = branch =~ /rb-(\d+)/
+    if (rbBranch) {
+        return rbBranch[0][0]
+    } else {
+        return null
+    }
+}
+
+def getServiceId(serviceName, ticketId) {
+    if (ticketId != 'null') {
+        return "${ticketId}-${serviceName}"
+    } else {
+        return serviceName
+    }
+}
 pipeline {
   agent any 
   environment {
+    DOMAIN_NAME='richardktran.local'
     KUBECONFIG="$HOME/.kube/config"
-    DOMAIN_NAME='richardktran.dev'
     ENVIRONMENT='development'
     DOCKER_USERNAME='richardktran'
     PROJECT_NAME='richardktran-blog'
@@ -10,6 +26,8 @@ pipeline {
     APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}"
     DOCKER_TAG = "${ENVIRONMENT}-${BUILD_NUMBER}"
     FULL_IMAGE = "${APP_IMAGE}:${DOCKER_TAG}"
+    TICKET_ID = getTicketId(gitBranch)
+    SERVICE_ID = getServiceId(SERVICE_NAME, TICKET_ID)
   }
 
   parameters {
@@ -18,6 +36,22 @@ pipeline {
   }
 
   stages {
+    stage('Init pipeline') {
+      steps {
+          script {
+              if (TICKET_ID != 'null') {
+                  echo "Detected Ticket ID: ${TICKET_ID}"
+              } else {
+                  echo "Ticket ID not found."
+              }
+              SERVICE_ID = getServiceId(SERVICE_NAME, TICKET_ID)
+
+              if (TICKET_ID != 'null') {
+                DOMAIN_NAME = "${TICKET_ID}.${DOMAIN_NAME}"
+              }
+          }
+      }
+    }
     stage('Checkout') {
       steps {
         dir('var/www/') {
@@ -66,7 +100,8 @@ pipeline {
           sh """
             sed -i "s#__image__#$APP_IMAGE#g" values.yaml
             sed -i "s#__docker-tag__#$DOCKER_TAG#g" values.yaml
-            helm upgrade ${SERVICE_NAME} --install \${WORKSPACE}/${PROJECT_NAME}/charts/backend -n ${ENVIRONMENT} -f values.yaml
+            sed -i "s#__hostname__#$DOMAIN_NAME#g" values.yaml
+            helm upgrade ${SERVICE_ID} --install \${WORKSPACE}/${PROJECT_NAME}/charts/backend -n ${ENVIRONMENT} -f values.yaml
           """
           echo 'Deploy to k8s completed'
         }
