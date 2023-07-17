@@ -20,9 +20,7 @@ pipeline {
     FULL_IMAGE = "${APP_IMAGE}:${DOCKER_TAG}"
     TICKET_ID = getTicketId(gitBranch) // New variable to store rb-*
 
-    if (TICKET_ID != 'null') {
-        SERVICE_NAME = "${TICKET_ID}-${SERVICE_NAME}"
-    }
+    SERVICE_NAME = TICKET_ID != null ? "${TICKET_ID}-${SERVICE_NAME}" : SERVICE_NAME
   }
 
   parameters {
