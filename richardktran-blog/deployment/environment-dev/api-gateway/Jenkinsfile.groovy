@@ -45,6 +45,7 @@ pipeline {
               } else {
                   echo "RB Branch not found. Using default branch."
               }
+              SERVICE_ID = getServiceId(SERVICE_NAME, TICKET_ID)
               echo "SERVICE_ID: ${SERVICE_ID}"
           }
       }
