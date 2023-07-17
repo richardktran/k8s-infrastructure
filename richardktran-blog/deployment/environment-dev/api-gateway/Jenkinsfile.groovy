@@ -1,3 +1,11 @@
+def getRBBranch(branch) {
+    def rbBranch = branch =~ /rb-(\d+)/
+    if (rbBranch) {
+        return rbBranch[0][0]
+    } else {
+        return null
+    }
+}
 pipeline {
   agent any 
   environment {
@@ -18,68 +26,80 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
+    stage('Detect RB Branch') {
       steps {
-        dir('var/www/') {
-          checkout ( [$class: 'GitSCM',
-            extensions: [[$class: 'CloneOption', timeout: 30]],
-            branches: [[name: "${gitBranch}" ]],
-            userRemoteConfigs: [[
-              credentialsId: "github-token",
-              url: "git@github.com:RichardKTranBlog/api-gateway.git"]
-            ]]
-          )
-          echo 'Git Checkout Completed'
-        }
-      }
-    }
-
-    stage('Setup params') {
-      steps {
-        dir('var/www/') {
-          sh "cp .env.example .env"
-        }
-      }
-    }
-
-    stage('Build image') {
-      steps {
-        dir('var/www/') {
-          sh """
-            docker build -t ${FULL_IMAGE} . --network=host
-            docker tag ${FULL_IMAGE} ${FULL_IMAGE}
-          """
-          echo 'Build image completed'
-        }
-      }
-    }
-
-    stage('Push image to registry') {
-      steps {
-        dir('var/www/') {
-          withCredentials([string(credentialsId: 'docker-pwd', variable: 'DOCKER_PASSWORD')])  {
-            sh('echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin')
+          script {
+              if (RB_BRANCH != null) {
+                  echo "Detected RB Branch: ${RB_BRANCH}"
+              } else {
+                  echo "RB Branch not found. Using default branch."
+                  RB_BRANCH = "develop" // Set a default value if RB_BRANCH is null
+              }
           }
-          sh """
-            docker push ${FULL_IMAGE}
-          """
-          echo 'Push image to registry completed'
-        }
       }
     }
+    // stage('Checkout') {
+    //   steps {
+    //     dir('var/www/') {
+    //       checkout ( [$class: 'GitSCM',
+    //         extensions: [[$class: 'CloneOption', timeout: 30]],
+    //         branches: [[name: "${gitBranch}" ]],
+    //         userRemoteConfigs: [[
+    //           credentialsId: "github-token",
+    //           url: "git@github.com:RichardKTranBlog/api-gateway.git"]
+    //         ]]
+    //       )
+    //       echo 'Git Checkout Completed'
+    //     }
+    //   }
+    // }
 
-    stage('Deploy') {
-      steps {
-        dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
-          sh """
-            sed -i "s#__image__#$APP_IMAGE#g" values.yaml
-            sed -i "s#__docker-tag__#$DOCKER_TAG#g" values.yaml
-            helm upgrade ${SERVICE_NAME} --install \${WORKSPACE}/${PROJECT_NAME}/charts/backend -n ${ENVIRONMENT} -f values.yaml
-          """
-          echo 'Deploy to k8s completed'
-        }
-      }
-    }
+    // stage('Setup params') {
+    //   steps {
+    //     dir('var/www/') {
+    //       sh "cp .env.example .env"
+    //     }
+    //   }
+    // }
+
+    // stage('Build image') {
+    //   steps {
+    //     dir('var/www/') {
+    //       sh """
+    //         docker build -t ${FULL_IMAGE} . --network=host
+    //         docker tag ${FULL_IMAGE} ${FULL_IMAGE}
+    //       """
+    //       echo 'Build image completed'
+    //     }
+    //   }
+    // }
+
+    // stage('Push image to registry') {
+    //   steps {
+    //     dir('var/www/') {
+    //       withCredentials([string(credentialsId: 'docker-pwd', variable: 'DOCKER_PASSWORD')])  {
+    //         sh('echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin')
+    //       }
+    //       sh """
+    //         docker push ${FULL_IMAGE}
+    //       """
+    //       echo 'Push image to registry completed'
+    //     }
+    //   }
+    // }
+
+    // stage('Deploy') {
+    //   steps {
+    //     dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
+    //       sh """
+    //         sed -i "s#__image__#$APP_IMAGE#g" values.yaml
+    //         sed -i "s#__docker-tag__#$DOCKER_TAG#g" values.yaml
+    //         helm upgrade ${SERVICE_NAME} --install \${WORKSPACE}/${PROJECT_NAME}/charts/backend -n ${ENVIRONMENT} -f values.yaml
+    //       """
+    //       echo 'Deploy to k8s completed'
+    //     }
+    //   }
+    // }
   } // End stages
   post {
       always {
