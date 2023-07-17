@@ -101,16 +101,14 @@ pipeline {
 
     stage('Deploy') {
       steps {
+        if (TICKET_ID != 'null') {
+          DOMAIN_NAME = "${TICKET_ID}.${DOMAIN_NAME}"
+        }
         dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
-          if (TICKET_ID != 'null') {
-            NEW_DOMAIN_NAME = "${TICKET_ID}.${DOMAIN_NAME}"
-            sh('sed -i "s#__hostname__#$NEW_DOMAIN_NAME#g" values.yaml')
-          } else {
-              sh('sed -i "s#__hostname__#$DOMAIN_NAME#g" values.yaml')
-          }
           sh """
             sed -i "s#__image__#$APP_IMAGE#g" values.yaml
             sed -i "s#__docker-tag__#$DOCKER_TAG#g" values.yaml
+            sed -i "s#__hostname__#$DOMAIN_NAME#g" values.yaml
             helm upgrade ${SERVICE_ID} --install \${WORKSPACE}/${PROJECT_NAME}/charts/backend -n ${ENVIRONMENT} -f values.yaml
           """
           echo 'Deploy to k8s completed'
