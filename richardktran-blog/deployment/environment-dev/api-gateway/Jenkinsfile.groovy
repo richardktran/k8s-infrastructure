@@ -30,7 +30,7 @@ pipeline {
     stage('Detect RB Branch') {
       steps {
           script {
-              if (TICKET_ID != null) {
+              if (TICKET_ID != 'null') {
                   echo "Detected RB Branch: ${TICKET_ID}"
               } else {
                   echo "RB Branch not found. Using default branch."
