@@ -3,7 +3,7 @@ def getTicketId(branch) {
     if (rbBranch) {
         return rbBranch[0][0]
     } else {
-        return null
+        return ''
     }
 }
 pipeline {
@@ -30,11 +30,10 @@ pipeline {
     stage('Detect RB Branch') {
       steps {
           script {
-              if (TICKET_ID != null) {
+              if (TICKET_ID != '') {
                   echo "Detected RB Branch: ${TICKET_ID}"
               } else {
                   echo "RB Branch not found. Using default branch."
-                  TICKET_ID = "develop" // Set a default value if TICKET_ID is null
               }
           }
       }
