@@ -101,9 +101,12 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        if (TICKET_ID != 'null') {
-          DOMAIN_NAME = "${TICKET_ID}.${DOMAIN_NAME}"
+        script {
+            if (TICKET_ID != 'null') {
+              DOMAIN_NAME = "${TICKET_ID}.${DOMAIN_NAME}"
+            }
         }
+        
         dir("${PROJECT_NAME}/deployment/environment-dev/${SERVICE_NAME}") {
           sh """
             sed -i "s#__image__#$APP_IMAGE#g" values.yaml
