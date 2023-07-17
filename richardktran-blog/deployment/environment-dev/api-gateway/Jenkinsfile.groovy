@@ -14,13 +14,13 @@ pipeline {
     ENVIRONMENT='development'
     DOCKER_USERNAME='richardktran'
     PROJECT_NAME='richardktran-blog'
-    SERVICE_NAME='api-gateway'
     APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}"
     DOCKER_TAG = "${ENVIRONMENT}-${BUILD_NUMBER}"
     FULL_IMAGE = "${APP_IMAGE}:${DOCKER_TAG}"
     TICKET_ID = getTicketId(gitBranch) // New variable to store rb-*
+    SERVICE_NAME = 'api-gateway'
 
-    SERVICE_NAME = TICKET_ID != null ? "${TICKET_ID}-${SERVICE_NAME}" : SERVICE_NAME
+    SERVICE_ID = TICKET_ID != 'null' ? "${TICKET_ID}-${SERVICE_NAME}" : SERVICE_NAME
   }
 
   parameters {
@@ -37,7 +37,7 @@ pipeline {
               } else {
                   echo "RB Branch not found. Using default branch."
               }
-              echo "SERVICE_NAME: ${SERVICE_NAME}"
+              echo "SERVICE_ID: ${SERVICE_ID}"
           }
       }
     }
