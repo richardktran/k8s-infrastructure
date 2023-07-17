@@ -46,6 +46,12 @@ pipeline {
                   echo "RB Branch not found. Using default branch."
               }
               SERVICE_ID = getServiceId(SERVICE_NAME, TICKET_ID)
+          }
+      }
+    }
+    stage('Veryfied Service') {
+      steps {
+          script {
               echo "SERVICE_ID: ${SERVICE_ID}"
           }
       }
