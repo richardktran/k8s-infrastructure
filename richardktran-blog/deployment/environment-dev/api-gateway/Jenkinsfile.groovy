@@ -1,9 +1,9 @@
-def getRBBranch(branch) {
+def getTicketId(branch) {
     def rbBranch = branch =~ /rb-(\d+)/
     if (rbBranch) {
         return rbBranch[0][0]
     } else {
-        return ''
+        return null
     }
 }
 pipeline {
@@ -18,7 +18,7 @@ pipeline {
     APP_IMAGE = "${DOCKER_USERNAME}/${SERVICE_NAME}"
     DOCKER_TAG = "${ENVIRONMENT}-${BUILD_NUMBER}"
     FULL_IMAGE = "${APP_IMAGE}:${DOCKER_TAG}"
-    TICKET_ID = getRBBranch(gitBranch) // New variable to store rb-*
+    TICKET_ID = getTicketId(gitBranch) // New variable to store rb-*
   }
 
   parameters {
@@ -30,7 +30,7 @@ pipeline {
     stage('Detect RB Branch') {
       steps {
           script {
-              if (TICKET_ID != '') {
+              if (TICKET_ID != null) {
                   echo "Detected RB Branch: ${TICKET_ID}"
               } else {
                   echo "RB Branch not found. Using default branch."
