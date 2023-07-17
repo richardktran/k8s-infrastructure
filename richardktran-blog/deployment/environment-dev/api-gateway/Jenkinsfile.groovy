@@ -19,7 +19,6 @@ pipeline {
   environment {
     DOMAIN_NAME='gateway.richardktran.local'
     KUBECONFIG="$HOME/.kube/config"
-    DOMAIN_NAME='richardktran.dev'
     ENVIRONMENT='development'
     DOCKER_USERNAME='richardktran'
     PROJECT_NAME='richardktran-blog'
