@@ -44,10 +44,6 @@ pipeline {
                   echo "Ticket ID not found."
               }
               SERVICE_ID = getServiceId(SERVICE_NAME, TICKET_ID)
-
-              if (TICKET_ID != 'null') {
-                DOMAIN_NAME = "${TICKET_ID}.${DOMAIN_NAME}"
-              }
           }
       }
     }
